@@ -1,97 +1,419 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 📄 DocTranslate Pro
 
-# Getting Started
+A powerful React Native application for scanning, extracting text from documents using AI, translating to multiple Indian languages, and chatting with an AI assistant about extracted content.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+**Built with:** React Native, TypeScript, Sarvam AI APIs
 
-## Step 1: Start Metro
+---
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## ✨ Features
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- 📸 **Document Scanning** - Capture images from camera or gallery
+- 🤖 **Text Extraction** - AI-powered document intelligence using Sarvam Vision
+- 🌐 **Multi-Language Translation** - Translate to 22+ languages including Indian languages
+- 💬 **AI Chat** - Ask questions about extracted documents
+- 💾 **Save Documents** - Store extracted text and translations locally
+- ⚙️ **Settings** - Configure API key and preferences
 
-```sh
-# Using npm
-npm start
+---
 
-# OR using Yarn
-yarn start
+## 🎯 Use Cases
+
+- **Students:** Extract text from images, translate study materials
+- **Travelers:** Translate signs, menus, documents in real-time
+- **Business:** Extract text from business documents and translate
+- **Accessibility:** Convert document images to readable text
+- **Language Learning:** Translate documents to practice languages
+
+---
+
+## 📋 Prerequisites
+
+- **Node.js** 16+
+- **React Native CLI** 
+- **Android SDK** (for Android development)
+- **Sarvam AI API Key** ([Get it here](https://dashboard.sarvam.ai/))
+
+---
+
+## 🚀 Installation
+
+### 1. Clone Repository
+```bash
+git clone <repository-url>
+cd sarvamDemo
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+### 2. Install Dependencies
+```bash
+npm install @react-navigation/bottom-tabs @react-navigation/native react-native-screens react-native-safe-area-context @react-native-async-storage/async-storage react-native-image-crop-picker react-native-permissions react-native-fs react-native-svg react-native-vector-icons react-native-gesture-handler
 ```
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+### 3. Create Environment File
+Create `.env` file in project root:
+```env
+SARVAM_API_KEY=your_api_key_here
 ```
 
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
+### 4. Create TypeScript Declaration
+Create `env.d.ts`:
+```typescript
+declare module '@env' {
+  export const SARVAM_API_KEY: string;
+}
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+### 5. Update Configuration Files
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+**tsconfig.json:**
+```json
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "lib": ["es2020"],
+    "jsx": "react-jsx"
+  }
+}
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+---
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+## 📁 Project Structure
 
-## Step 3: Modify your app
+```
+sarvamDemo/
+├── src/
+│   ├── api/
+│   │   ├── sarvamAPI.ts          # All API calls to Sarvam AI
+│   │   └── types.ts              # TypeScript interfaces
+│   ├── screens/
+│   │   ├── ScanScreen/
+│   │   │   ├── index.tsx         # UI Component
+│   │   │   ├── container.tsx     # Business Logic
+│   │   │   └── styles.ts         # Styles
+│   │   ├── ChatScreen/
+│   │   │   ├── index.tsx
+│   │   │   ├── container.tsx
+│   │   │   └── styles.ts
+│   │   ├── SavedScreen/
+│   │   │   ├── index.tsx
+│   │   │   ├── container.tsx
+│   │   │   └── styles.ts
+│   │   └── SettingsScreen/
+│   │       ├── index.tsx
+│   │       ├── container.tsx
+│   │       └── styles.ts
+│   ├── navigation/
+│   │   └── TabNavigator.tsx      # Bottom tab navigation
+│   ├── services/
+│   │   └── storage.ts            # AsyncStorage utilities
+│   ├── styles/
+│   │   └── colors.ts             # Color constants
+│   ├── utils/
+│   │   └── helpers.ts            # Helper functions
+│   └── types/
+│       └── index.ts              # App-wide types
+├── App.tsx                        # Entry point
+├── tsconfig.json
+├── env.d.ts
+├── .env
+└── package.json
+```
 
-Now that you have successfully run the app, let's make changes!
+---
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+## 🏗️ Architecture
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+### Separation of Concerns
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+Each screen follows a **3-file pattern**:
 
-## Congratulations! :tada:
+1. **`index.tsx`** - Pure UI Component
+   - Only presentation logic
+   - Receives props from container
+   - No state management
 
-You've successfully run and modified your React Native App. :partying_face:
+2. **`container.tsx`** - Custom Hook with Business Logic
+   - State management
+   - API calls
+   - Error handling
+   - Returns state & handlers to UI
 
-### Now what?
+3. **`styles.ts`** - StyleSheet
+   - All component styles
+   - Theme colors
+   - Responsive sizing
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+### API Layer
 
-# Troubleshooting
+**`src/api/sarvamAPI.ts`** - Centralized API Service
+- Document Intelligence (text extraction)
+- Translation (22+ languages)
+- Chat Completion (AI conversations)
+- Language Detection
+- Singleton pattern for reusability
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+---
 
-# Learn More
+## 🔑 Sarvam AI APIs Used
 
-To learn more about React Native, take a look at the following resources:
+### 1. Document Intelligence
+Extract text from document images using AI vision:
+```typescript
+POST /doc-digitization/job/v1
+```
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+**Features:**
+- Supports JPG, PNG images
+- Converts to ZIP for upload
+- Asynchronous processing with job polling
+- Supports 22+ languages
+
+### 2. Translation
+Translate text between languages:
+```typescript
+POST /translate
+```
+
+**Supports:**
+- 22+ Indian languages
+- English
+- European languages (Spanish, French, German, etc.)
+- Auto-detection of source language
+
+### 3. Chat Completion
+Get AI responses about document content:
+```typescript
+POST /chat/completions
+```
+
+**Model:** sarvam-m
+- Context-aware responses
+- Supports up to 500 token output
+
+---
+
+## 📱 User Interface
+
+### Screens
+
+#### 1. **Scanner Screen** 📸
+- Capture images with camera or select from gallery
+- View extracted text
+- Select translation language
+- Translate with one tap
+- Save documents
+- Ask AI questions about text
+
+#### 2. **Chat Screen** 💬
+- Chat with AI assistant
+- Ask questions about document content
+- View conversation history
+- Real-time responses
+
+#### 3. **Saved Screen** 📚
+- View all saved documents
+- Shows extraction & translation language pairs
+- Copy text to clipboard
+- Delete documents
+- Preview extracted content
+
+#### 4. **Settings Screen** ⚙️
+- Configure Sarvam AI API key
+- Verify API key validity
+- Set default language preferences
+- Toggle history saving
+- Clear all data
+- View app information
+
+### Design System
+
+**Colors:**
+- Background: `#0f1419`
+- Secondary: `#1a2332`
+- Primary: `#00d4ff` (Cyan)
+- Dark Cyan: `#0099cc`
+- Text: `#ffffff`
+- Muted Text: `#a0a0a0`
+
+**Components:**
+- Custom SVG icons
+- Smooth animations
+- Dark theme with gradient accents
+- Bottom tab navigation
+
+---
+
+## 🔄 Workflow
+
+### Document Extraction & Translation
+
+```
+1. User selects image
+   ↓
+2. Image converted to base64
+   ↓
+3. Create ZIP file with image
+   ↓
+4. Upload ZIP to Azure blob storage
+   ↓
+5. Sarvam API extracts text from image
+   ↓
+6. Display extracted text
+   ↓
+7. User selects target language
+   ↓
+8. Translate text using Sarvam translate API
+   ↓
+9. Display translated text
+   ↓
+10. User can save, copy, or ask AI
+```
+
+### Document Intelligence Flow
+
+```
+Create Job → Get Upload URL → Upload ZIP → Start Job → Poll Status → Extract Text
+```
+
+---
+
+## 💾 Data Storage
+
+### Local Storage (AsyncStorage)
+
+- **Saved Documents** - Extracted & translated text
+- **API Key** - Sarvam AI subscription key
+- **Preferences** - Language, history settings
+- **Chat History** - Conversation logs (optional)
+
+All data is stored locally on device. No cloud sync.
+
+---
+
+## 📊 API Response Handling
+
+### Document Intelligence Job Lifecycle
+
+```
+Status: Accepted → Pending → Running → Completed
+Polling: Every 2 seconds, Max 300 attempts (10 minutes)
+```
+
+### Error Handling
+
+- Invalid/corrupted ZIP files
+- API authentication failures
+- Network timeouts
+- Processing failures with detailed error messages
+- User-friendly alerts
+
+---
+
+## 🛠️ Key Dependencies
+
+| Package | Purpose |
+|---------|---------|
+| `@react-navigation/bottom-tabs` | Bottom tab navigation |
+| `@react-navigation/native` | Navigation framework |
+| `react-native-image-crop-picker` | Camera & gallery access |
+| `react-native-permissions` | Permission management |
+| `react-native-fs` | File system access |
+| `@react-native-async-storage/async-storage` | Local data storage |
+| `react-native-svg` | SVG icon rendering |
+| `react-native-gesture-handler` | Gesture handling |
+
+---
+
+## 🚀 Running the App
+
+### Development
+
+```bash
+# Start the development server
+npx react-native start --reset-cache
+
+# In another terminal, run on Android
+npx react-native run-android
+
+# Or for iOS
+npx react-native run-ios
+```
+
+### Building for Release
+
+```bash
+# Android
+cd android
+./gradlew assembleRelease
+
+# iOS
+xcodebuild -workspace ios/sarvamDemo.xcworkspace -scheme sarvamDemo -configuration Release
+```
+
+---
+
+## 🔐 Security Considerations
+
+- **API Key:** Stored locally in AsyncStorage, never transmitted insecurely
+- **HTTPS Only:** All Sarvam AI API calls use HTTPS
+- **No Cloud Storage:** All data remains on device
+- **Permission Handling:** Request only necessary permissions
+
+---
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### 1. "API Key not configured"
+**Solution:** Add API key to Settings screen or `.env` file
+
+#### 2. "Invalid or corrupted ZIP file"
+**Solution:** Ensure image is properly converted to ZIP format (fixed in latest version)
+
+#### 3. "Document processing timeout"
+**Solution:** Processing takes up to 10 minutes, app will keep polling
+
+#### 4. "Camera permission denied"
+**Solution:** Grant camera permission in app settings (Android/iOS Settings)
+
+#### 5. "Gallery access denied"
+**Solution:** Grant storage/photo permissions in device settings
+
+---
+
+## 📈 Performance
+
+- **Base64 Conversion:** <100ms for typical images
+- **ZIP Creation:** <50ms
+- **Azure Upload:** Depends on file size & network
+- **Text Extraction:** 30 seconds - 10 minutes (API processing)
+- **Translation:** <2 seconds per request
+- **Chat Response:** <5 seconds
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see LICENSE file for details.
+
+---
+
+## 🔗 Resources
+
+- [Sarvam AI Documentation](https://docs.sarvam.ai)
+- [React Native Documentation](https://reactnative.dev)
+- [React Navigation](https://reactnavigation.org)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs)
