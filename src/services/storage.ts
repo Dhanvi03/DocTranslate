@@ -1,33 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SARVAM_API_KEY } from '@env';
 
 export const checkApiKey = async () => {
-  try {
-    const key = await AsyncStorage.getItem('SARVAM_API_KEY');
-    if (!key) {
-      console.warn('⚠️ API Key not set. Go to Settings to add it.');
-    }
-  } catch (error) {
-    console.error('Storage error:', error);
+  if (!SARVAM_API_KEY || SARVAM_API_KEY === 'your_api_key_here') {
+    console.warn('⚠️ API Key not set. Add it to .env file.');
   }
 };
 
-export const saveApiKey = async (key: string) => {
-  try {
-    await AsyncStorage.setItem('SARVAM_API_KEY', key);
-    return true;
-  } catch (error) {
-    console.error('Error saving API key:', error);
-    return false;
-  }
+export const saveApiKey = async (_key: string) => {
+  // No-op: API key is now managed via .env file
+  return true;
 };
 
 export const getApiKey = async () => {
-  try {
-    return await AsyncStorage.getItem('SARVAM_API_KEY');
-  } catch (error) {
-    console.error('Error getting API key:', error);
-    return null;
-  }
+  return SARVAM_API_KEY || null;
 };
 
 export const saveDocument = async (doc: any) => {

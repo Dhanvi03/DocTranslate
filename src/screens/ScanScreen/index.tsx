@@ -1,7 +1,7 @@
 // src/screens/ScanScreen/index.tsx
 
 import React, { useEffect, useEffectEvent, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Image, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Image, Alert, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { COLORS } from '../../styles/colors';
 import { styles } from './styles';
@@ -25,6 +25,7 @@ const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
         handleTranslate,
         handleSave,
         setImage,
+        handleChangeImage,
         setSelectedLanguage,
         setShowLanguageDropdown,
     } = useScanScreen(() => navigation.navigate('Chat'));
@@ -39,7 +40,7 @@ const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
 
     return (
         <View style={{ flex: 1, backgroundColor: COLORS.bg }}>
-            <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
                 {/* Screen Title */}
                 <View style={styles.screenHeader}>
                     <Text style={styles.title}>Scanner</Text>
@@ -78,9 +79,16 @@ const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
                 ) : (
                     <View style={styles.imagePreview}>
                         <Image source={{ uri: image }} style={styles.image} />
+                        {loading && !extractedText && (
+                            <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', borderRadius: 12 }]}>
+                                <ActivityIndicator size="large" color={COLORS.primary} />
+                                <Text style={{ color: '#fff', marginTop: 10, fontWeight: 'bold' }}>Extracting text...</Text>
+                            </View>
+                        )}
                         <TouchableOpacity
-                            style={styles.changeButton}
-                            onPress={() => setImage(null)}
+                            style={[styles.changeButton, loading && { opacity: 0.5 }]}
+                            onPress={handleChangeImage}
+                            disabled={loading}
                         >
                             <Text style={styles.changeButtonText}>Change Image</Text>
                         </TouchableOpacity>
@@ -131,7 +139,7 @@ const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
                             disabled={loading}
                         >
                             {loading ? (
-                                <ActivityIndicator color={COLORS.bg} />
+                                <ActivityIndicator color={COLORS.border} />
                             ) : (
                                 <>
                                     <Icon name="translate" size={20} color={COLORS.bg} style={{ marginRight: 8 }} />

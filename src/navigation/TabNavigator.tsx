@@ -1,7 +1,7 @@
 // src/navigation/TabNavigator.tsx
 
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Keyboard } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,7 +11,7 @@ import ScanScreen from '../screens/ScanScreen';
 import ChatScreen from '../screens/ChatScreen';
 import SavedScreen from '../screens/SavedScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import AppHeader from '../components/AppHeader';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -23,6 +23,27 @@ interface CustomTabBarProps {
 
 const CustomTabBar: React.FC<CustomTabBarProps> = ({ state, descriptors, navigation }) => {
     const insets = useSafeAreaInsets();
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+    useEffect(() => {
+        const showSubscription = Keyboard.addListener(
+            Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+            () => setKeyboardVisible(true)
+        );
+        const hideSubscription = Keyboard.addListener(
+            Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+            () => setKeyboardVisible(false)
+        );
+
+        return () => {
+            showSubscription.remove();
+            hideSubscription.remove();
+        };
+    }, []);
+
+    if (isKeyboardVisible) {
+        return null;
+    }
 
     const tabs = [
         { name: 'Scan', label: 'Scan', icon: 'camera', iconFocused: 'camera' },
@@ -131,7 +152,6 @@ const styles = StyleSheet.create({
 const TabNavigator: React.FC = () => {
     return (
         <View style={{ flex: 1 }}>
-            <AppHeader />
             <Tab.Navigator
                 tabBar={(props) => <CustomTabBar {...props} />}
                 screenOptions={{

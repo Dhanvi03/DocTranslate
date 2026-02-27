@@ -1,7 +1,7 @@
 // src/screens/ChatScreen/index.tsx
 
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { COLORS } from '../../styles/colors';
 import { styles } from './styles';
@@ -24,7 +24,10 @@ const ChatScreen: React.FC = () => {
     );
 
     return (
-        <View style={{ flex: 1, backgroundColor: COLORS.bg }}>
+        <KeyboardAvoidingView
+            style={{ flex: 1, backgroundColor: COLORS.bg }}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
             {/* Screen Title */}
             <View style={styles.screenHeader}>
                 <View>
@@ -43,6 +46,7 @@ const ChatScreen: React.FC = () => {
                 scrollEnabled={true}
                 contentContainerStyle={styles.messagesContainer}
                 renderItem={renderMessage}
+                showsVerticalScrollIndicator={false}
             />
 
             {/* Input */}
@@ -68,7 +72,7 @@ const ChatScreen: React.FC = () => {
                     )}
                 </TouchableOpacity>
             </View>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 

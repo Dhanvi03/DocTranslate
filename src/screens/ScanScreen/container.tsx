@@ -65,6 +65,11 @@ export const useScanScreen = (onAskAI: () => void) => {
     };
 
     const pickImage = async (source: 'camera' | 'gallery') => {
+        if (loading) {
+            Alert.alert('Please wait', 'Task is currently processing.');
+            return;
+        }
+
         const hasPermission = await requestPermissions(source);
         if (!hasPermission) return;
 
@@ -81,6 +86,8 @@ export const useScanScreen = (onAskAI: () => void) => {
 
             if (result.path) {
                 setImage(result.path);
+                setExtractedText('');
+                setTranslatedText('');
                 handleExtractText(result.path);
             }
         } catch (error: any) {
@@ -113,14 +120,14 @@ export const useScanScreen = (onAskAI: () => void) => {
 
             // Convert image file to base64
             const base64 = await fileToBase64(filePath);
-            
+
             console.log('Image converted to base64, length:', base64.length);
 
             // Call API with base64 string
             const result = await SarvamAPI.documentIntelligence(apiKey, base64);
-            
+
             console.log('Result:', result);
-            
+
             if (result.extracted_text) {
                 setExtractedText(result.extracted_text);
                 setTranslatedText('');
@@ -171,6 +178,16 @@ export const useScanScreen = (onAskAI: () => void) => {
         };
     };
 
+    const handleChangeImage = () => {
+        if (loading) {
+            Alert.alert('Please wait', 'Text extraction is in progress.');
+            return;
+        }
+        setImage(null);
+        setExtractedText('');
+        setTranslatedText('');
+    };
+
     return {
         // State
         image,
@@ -185,6 +202,7 @@ export const useScanScreen = (onAskAI: () => void) => {
         handleTranslate,
         handleSave,
         setImage,
+        handleChangeImage,
         setSelectedLanguage,
         setShowLanguageDropdown,
     };

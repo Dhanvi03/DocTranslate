@@ -82,6 +82,7 @@ const SavedScreen: React.FC = () => {
                     scrollEnabled={true}
                     contentContainerStyle={styles.listContainer}
                     renderItem={renderDocument}
+                    showsVerticalScrollIndicator={false}
                 />
             )}
         </View>

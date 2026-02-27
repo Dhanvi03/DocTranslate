@@ -24,7 +24,7 @@ const SettingsScreen: React.FC = () => {
 
     return (
         <View style={{ flex: 1, backgroundColor: COLORS.bg }}>
-            <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ScrollView contentContainerStyle={styles.scrollContent} >
                 {/* Screen Title */}
                 <View style={styles.screenHeader}>
                     <Text style={styles.title}>Settings</Text>
@@ -83,12 +83,12 @@ const SettingsScreen: React.FC = () => {
                     </View>
 
                     <Text style={styles.label}>Default Language</Text>
-                    <TouchableOpacity
+                    <View
                         style={[styles.selectButton, { borderColor: COLORS.border, backgroundColor: COLORS.bg }]}
                     >
                         <Text style={styles.selectButtonText}>{prefs.defaultLanguage}</Text>
-                        <Icon name="chevron-down" size={20} color={COLORS.primary} />
-                    </TouchableOpacity>
+                        {/* <Icon name="chevron-down" size={20} color={COLORS.primary} /> */}
+                    </View>
 
                     <View style={styles.toggleRow}>
                         <Text style={styles.label}>Save History</Text>
